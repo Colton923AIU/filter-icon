@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "Filter Icon",
+    "id": "89893283-2eb8-4c55-8c8b-dc84c5568f20",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "Colton McClintock",
+      "websiteUrl": "coltonmcclintock.com",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.19.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "Variable Toggle Icon"
+      },
+      "longDescription": {
+        "default": "Create a new global boolean variable with the properties pane, and then use the variable name within the Dropdown Custom SPFx Webpart"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "filter-icon Feature",
+        "description": "The feature that activates elements of the filter-icon solution.",
+        "id": "0f5e4af6-4077-4baa-9559-4d6378c3b048",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/filter-icon_v01.sppkg"
+  }
+}

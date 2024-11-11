@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "filter-icon-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/filterIcon/FilterIconWebPart.js",
+          "manifest": "./src/webparts/filterIcon/FilterIconWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "FilterIconWebPartStrings": "lib/webparts/filterIcon/loc/{locale}.js"
+  }
+}

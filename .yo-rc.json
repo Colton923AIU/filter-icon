@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "18.17.1",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.12.0"
+    },
+    "version": "1.19.0",
+    "libraryName": "filter-icon",
+    "libraryId": "89893283-2eb8-4c55-8c8b-dc84c5568f20",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "filter-icon",
+    "solutionShortDescription": "filter-icon description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
