@@ -40,6 +40,7 @@ var FilterIcon = function (props) {
     var isActive = props.globalStateService.getState(props.name);
     return (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { onClick: handleClick, style: {
             opacity: isActive ? 1 : 0.7,
+            cursor: "pointer",
         }, className: _FilterIcon_module_scss__WEBPACK_IMPORTED_MODULE_1__["default"].filterIconBase, dangerouslySetInnerHTML: {
             __html: props.icon,
         } }));

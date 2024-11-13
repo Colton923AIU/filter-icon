@@ -15,6 +15,7 @@ const FilterIcon: React.FC<IFilterIconProps> = (props) => {
       onClick={handleClick}
       style={{
         opacity: isActive ? 1 : 0.7,
+        cursor: "pointer",
       }}
       className={styles.filterIconBase}
       dangerouslySetInnerHTML={{
