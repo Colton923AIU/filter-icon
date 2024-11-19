@@ -33,11 +33,25 @@ _node_modules_microsoft_sp_css_loader_node_modules_microsoft_load_themed_styles_
 
 
 var FilterIcon = function (props) {
+    var _a = react__WEBPACK_IMPORTED_MODULE_0__.useState(props.globalStateService.getState(props.name)), isActive = _a[0], setIsActive = _a[1];
+    // Effect to subscribe to state changes
+    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+        var handleStateChange = function (newState) {
+            setIsActive(newState);
+        };
+        // Subscribe to global state changes
+        props.globalStateService.subscribe(props.name, handleStateChange);
+        // Cleanup subscription on unmount
+        return function () {
+            // NOTE: Implement unsubscribe logic if `GlobalStateService` supports it
+        };
+    }, [props.globalStateService, props.name]);
     var handleClick = function () {
-        // Toggle the state for the given name (e.g., "Military")
+        // Toggle the state for the given name
+        console.log("current state of get state: ");
+        console.log(props.globalStateService.getState(props.name));
         props.globalStateService.toggleState(props.name);
     };
-    var isActive = props.globalStateService.getState(props.name);
     return (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { onClick: handleClick, style: {
             opacity: isActive ? 1 : 0.7,
             cursor: "pointer",
@@ -649,7 +663,7 @@ var FilterIconWebPart = /** @class */ (function (_super) {
                                     label: "Icon",
                                 }),
                                 (0,_microsoft_sp_property_pane__WEBPACK_IMPORTED_MODULE_3__.PropertyPaneTextField)("name", {
-                                    label: "Filter Name (e.g., Military)",
+                                    label: "Filter Name (example: mil)",
                                 }),
                             ],
                         },

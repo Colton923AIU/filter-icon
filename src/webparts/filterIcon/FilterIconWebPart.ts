@@ -67,7 +67,7 @@ export default class FilterIconWebPart extends BaseClientSideWebPart<IFilterIcon
                   label: "Icon",
                 }),
                 PropertyPaneTextField("name", {
-                  label: "Filter Name (e.g., Military)",
+                  label: "Filter Name (example: mil)",
                 }),
               ],
             },
