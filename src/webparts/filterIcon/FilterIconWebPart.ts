@@ -9,22 +9,23 @@ import { BaseClientSideWebPart } from "@microsoft/sp-webpart-base";
 
 import FilterIcon from "./components/FilterIcon";
 import { IFilterIconProps } from "./components/IFilterIconProps";
-import { GlobalStateService } from "./context/GlobalStateService";
 
 export interface IFilterIconWebPartProps {
   tagTitle: string;
   icon: string;
-  name: string; // User-defined name for the filter (e.g., "Military")
+  name: string;
 }
 
 export default class FilterIconWebPart extends BaseClientSideWebPart<IFilterIconWebPartProps> {
-  private globalStateService: GlobalStateService;
-
   protected onInit(): Promise<void> {
-    this.globalStateService = this.context.serviceScope.consume(
-      GlobalStateService.serviceKey
-    );
-    return super.onInit();
+    return Promise.resolve();
+  }
+
+  public toggle(filterName: string) {
+    let event = new CustomEvent("filterToggled", {
+      detail: { filterName: filterName },
+    });
+    return window.dispatchEvent(event);
   }
 
   public render(): void {
@@ -34,7 +35,7 @@ export default class FilterIconWebPart extends BaseClientSideWebPart<IFilterIcon
         tagTitle: this.properties.tagTitle,
         icon: this.properties.icon,
         name: this.properties.name, // Pass the unique name for each icon
-        globalStateService: this.globalStateService,
+        toggle: this.toggle,
       }
     );
 

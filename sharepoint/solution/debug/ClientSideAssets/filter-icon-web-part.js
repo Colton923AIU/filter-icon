@@ -33,31 +33,20 @@ _node_modules_microsoft_sp_css_loader_node_modules_microsoft_load_themed_styles_
 
 
 var FilterIcon = function (props) {
-    var _a = react__WEBPACK_IMPORTED_MODULE_0__.useState(props.globalStateService.getState(props.name)), isActive = _a[0], setIsActive = _a[1];
-    // Effect to subscribe to state changes
+    var _a = react__WEBPACK_IMPORTED_MODULE_0__.useState(false), isActive = _a[0], setIsActive = _a[1];
     react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
-        var handleStateChange = function (newState) {
-            setIsActive(newState);
-        };
-        // Subscribe to global state changes
-        props.globalStateService.subscribe(props.name, handleStateChange);
-        // Cleanup subscription on unmount
-        return function () {
-            // NOTE: Implement unsubscribe logic if `GlobalStateService` supports it
-        };
-    }, [props.globalStateService, props.name]);
-    var handleClick = function () {
-        // Toggle the state for the given name
-        console.log("current state of get state: ");
-        console.log(props.globalStateService.getState(props.name));
-        props.globalStateService.toggleState(props.name);
-    };
-    return (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { onClick: handleClick, style: {
+        props.toggle(props.name);
+        setIsActive(!isActive);
+    }, []);
+    return (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { onClick: function () {
+            props.toggle(props.name);
+            setIsActive(!isActive);
+        }, style: {
             opacity: isActive ? 1 : 0.7,
             cursor: "pointer",
         }, className: _FilterIcon_module_scss__WEBPACK_IMPORTED_MODULE_1__["default"].filterIconBase, dangerouslySetInnerHTML: {
-            __html: props.icon,
-        } }));
+            __html: props.icon, // Render the icon HTML
+        }, id: props.tagTitle }));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FilterIcon);
 
@@ -80,56 +69,6 @@ var styles = {
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (styles);
 /* tslint:enable */ 
-
-
-/***/ }),
-
-/***/ 9:
-/*!***************************************************************!*\
-  !*** ./lib/webparts/filterIcon/context/GlobalStateService.js ***!
-  \***************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   GlobalStateService: () => (/* binding */ GlobalStateService)
-/* harmony export */ });
-/* harmony import */ var _microsoft_sp_core_library__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @microsoft/sp-core-library */ 878);
-/* harmony import */ var _microsoft_sp_core_library__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_microsoft_sp_core_library__WEBPACK_IMPORTED_MODULE_0__);
-
-var GlobalStateService = /** @class */ (function () {
-    function GlobalStateService(serviceScope) {
-        // Store states by name (e.g., "Military" => true/false)
-        this.states = {};
-        this.subscribers = {};
-    }
-    // Get the state for a specific filter name
-    GlobalStateService.prototype.getState = function (name) {
-        return this.states[name] || false; // Default to false if not defined
-    };
-    // Toggle the state for a specific filter name
-    GlobalStateService.prototype.toggleState = function (name) {
-        this.states[name] = !this.states[name];
-        this.notifySubscribers(name);
-    };
-    // Subscribe to state changes for a specific filter name
-    GlobalStateService.prototype.subscribe = function (name, callback) {
-        if (!this.subscribers[name]) {
-            this.subscribers[name] = [];
-        }
-        this.subscribers[name].push(callback);
-    };
-    // Notify subscribers of a state change for a specific filter name
-    GlobalStateService.prototype.notifySubscribers = function (name) {
-        var _this = this;
-        var callbacks = this.subscribers[name];
-        if (callbacks) {
-            callbacks.forEach(function (callback) { return callback(_this.states[name]); });
-        }
-    };
-    GlobalStateService.serviceKey = _microsoft_sp_core_library__WEBPACK_IMPORTED_MODULE_0__.ServiceKey.create("filter-icon:GlobalStateService", GlobalStateService);
-    return GlobalStateService;
-}());
-
 
 
 /***/ }),
@@ -594,7 +533,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _microsoft_sp_webpart_base__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @microsoft/sp-webpart-base */ 134);
 /* harmony import */ var _microsoft_sp_webpart_base__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_microsoft_sp_webpart_base__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _components_FilterIcon__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/FilterIcon */ 28);
-/* harmony import */ var _context_GlobalStateService__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./context/GlobalStateService */ 9);
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -616,22 +554,26 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 
-
 var FilterIconWebPart = /** @class */ (function (_super) {
     __extends(FilterIconWebPart, _super);
     function FilterIconWebPart() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     FilterIconWebPart.prototype.onInit = function () {
-        this.globalStateService = this.context.serviceScope.consume(_context_GlobalStateService__WEBPACK_IMPORTED_MODULE_6__.GlobalStateService.serviceKey);
-        return _super.prototype.onInit.call(this);
+        return Promise.resolve();
+    };
+    FilterIconWebPart.prototype.toggle = function (filterName) {
+        var event = new CustomEvent("filterToggled", {
+            detail: { filterName: filterName },
+        });
+        return window.dispatchEvent(event);
     };
     FilterIconWebPart.prototype.render = function () {
         var element = react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_FilterIcon__WEBPACK_IMPORTED_MODULE_5__["default"], {
             tagTitle: this.properties.tagTitle,
             icon: this.properties.icon,
             name: this.properties.name,
-            globalStateService: this.globalStateService,
+            toggle: this.toggle,
         });
         react_dom__WEBPACK_IMPORTED_MODULE_1__.render(element, this.domElement);
     };
