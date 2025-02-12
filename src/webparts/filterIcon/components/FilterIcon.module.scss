@@ -1,12 +1,10 @@
 .filterIconBase {
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
   display: flex;
-  justify-content: center;
-  align-items: center;
+}
 
-  padding: 1px;
-  margin: 1px;
-  min-width: 30px;
-  min-height: 30px;
-
-  background-color: transparent;
+.active {
+  opacity: 1;
 }

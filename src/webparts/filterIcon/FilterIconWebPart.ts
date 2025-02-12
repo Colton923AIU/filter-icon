@@ -5,37 +5,57 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField,
 } from "@microsoft/sp-property-pane";
-import { BaseClientSideWebPart } from "@microsoft/sp-webpart-base";
+import {
+  BaseClientSideWebPart,
+  IWebPartPropertiesMetadata,
+} from "@microsoft/sp-webpart-base";
 
 import FilterIcon from "./components/FilterIcon";
 import { IFilterIconProps } from "./components/IFilterIconProps";
+import { DynamicProperty } from "@microsoft/sp-component-base";
 
 export interface IFilterIconWebPartProps {
-  tagTitle: string;
   icon: string;
   name: string;
+  filterState: DynamicProperty<{ [key: string]: boolean }>;
 }
 
 export default class FilterIconWebPart extends BaseClientSideWebPart<IFilterIconWebPartProps> {
+  // Callback to handle dynamic data updates
+  private filterStateCallback = () => {
+    this.render();
+  };
+
   protected onInit(): Promise<void> {
+    this.properties.filterState.register(this.filterStateCallback);
+    const curr = this.properties.filterState.tryGetValue();
+    if (curr === undefined) {
+      this.properties.filterState.setValue({ [this.properties.name]: false });
+    }
+
     return Promise.resolve();
   }
 
-  public toggle(filterName: string) {
-    let event = new CustomEvent("filterToggled", {
-      detail: { filterName: filterName },
-    });
-    return window.dispatchEvent(event);
-  }
-
   public render(): void {
+    const toggle = () => {
+      const curr = this.properties.filterState.tryGetValue();
+      if (curr === undefined) {
+        this.properties.filterState.setValue({ [this.properties.name]: false });
+        return false;
+      } else {
+        const newCurr = { ...curr };
+        const val = !newCurr[this.properties.name];
+        newCurr[this.properties.name] = val;
+        this.properties.filterState.setValue(newCurr);
+        return val;
+      }
+    };
     const element: React.ReactElement<IFilterIconProps> = React.createElement(
       FilterIcon,
       {
-        tagTitle: this.properties.tagTitle,
         icon: this.properties.icon,
-        name: this.properties.name, // Pass the unique name for each icon
-        toggle: this.toggle,
+        filterName: this.properties.name,
+        toggle: toggle,
       }
     );
 
@@ -44,10 +64,26 @@ export default class FilterIconWebPart extends BaseClientSideWebPart<IFilterIcon
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
+
+    if (this.properties.filterState.hasDefaultCallback()) {
+      this.properties.filterState.removeDefaultCallback();
+    }
   }
 
   protected get dataVersion(): Version {
     return Version.parse("1.0");
+  }
+
+  protected get propertiesMetadata(): IWebPartPropertiesMetadata {
+    return {
+      filterState: {
+        dynamicPropertyType: "object",
+      },
+    };
+  }
+
+  protected get disableReactivePropertyChanges(): boolean {
+    return false;
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
@@ -61,14 +97,14 @@ export default class FilterIconWebPart extends BaseClientSideWebPart<IFilterIcon
             {
               groupName: "Filter Icon",
               groupFields: [
-                PropertyPaneTextField("tagTitle", {
-                  label: "Tag Title",
-                }),
                 PropertyPaneTextField("icon", {
                   label: "Icon",
+                  description: "SVG",
                 }),
                 PropertyPaneTextField("name", {
-                  label: "Filter Name (example: mil)",
+                  label: "Filter Name",
+                  description:
+                    "Example: 'AIUSys', now when you want to use this filter in other webparts, you have to use <AIUSys>{your text} </AIUSys> to wrap your text.",
                 }),
               ],
             },

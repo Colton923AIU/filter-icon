@@ -2,28 +2,45 @@ import * as React from "react";
 import styles from "./FilterIcon.module.scss";
 import { IFilterIconProps } from "./IFilterIconProps";
 
-const FilterIcon: React.FC<IFilterIconProps> = (props) => {
-  const [isActive, setIsActive] = React.useState<boolean>(false);
+const FilterIcon: React.FC<IFilterIconProps> = ({
+  icon,
+  filterName,
+  toggle,
+}) => {
+  const [active, setActive] = React.useState<boolean | null>(null);
+
+  const handleToggle = () => {
+    const newValue = toggle();
+    setActive(newValue);
+  };
 
   React.useEffect(() => {
-    props.toggle(props.name);
-    setIsActive(!isActive);
+    if (active === null) {
+      setTimeout(() => {
+        handleToggle();
+      }, 1000);
+    }
   }, []);
+
+  if (!filterName) return null;
+  if (active === null) return null;
   return (
     <div
-      onClick={() => {
-        props.toggle(props.name);
-        setIsActive(!isActive);
+      onClick={(e) => {
+        e.preventDefault();
+        handleToggle();
       }}
-      style={{
-        opacity: isActive ? 1 : 0.7,
-        cursor: "pointer",
-      }}
-      className={styles.filterIconBase}
+      className={
+        active
+          ? `${styles.filterIconBase} ${styles.active}`
+          : styles.filterIconBase
+      }
       dangerouslySetInnerHTML={{
-        __html: props.icon, // Render the icon HTML
+        __html: icon,
       }}
-      id={props.tagTitle}
+      id={filterName}
+      role="button"
+      tabIndex={0}
     />
   );
 };

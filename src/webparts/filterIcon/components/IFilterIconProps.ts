@@ -1,6 +1,5 @@
 export interface IFilterIconProps {
-  tagTitle: string;
+  filterName: string;
   icon: string;
-  name: string;
-  toggle: (filterName: string) => void;
+  toggle: () => boolean;
 }
